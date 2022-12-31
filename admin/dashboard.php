@@ -2,7 +2,7 @@
 session_start();
 include "config.php";
 if(!isset($_SESSION['loggedin_admin'])){
-    header("location:signin.php");
+    header("location:index.php");
 }
 $details = "SELECT * FROM admins WHERE phone='".$_SESSION['loggedin_admin']."'";
     $result = $conn->query($details);
