@@ -1,26 +1,17 @@
 <?php
 session_start();
 include "config.php";
-if(!isset($_SESSION['loggedin_id'])){
-    header("location:login.php");
+if(!isset($_SESSION['loggedin_admin'])){
+    header("location:signin.php");
 }
-$details = "SELECT * FROM riders WHERE phone='".$_SESSION['loggedin_id']."'";
+$details = "SELECT * FROM admins WHERE phone='".$_SESSION['loggedin_admin']."'";
     $result = $conn->query($details);
     if ($result->num_rows > 0) {
         while($row = $result->fetch_assoc()) {
-            $id = $row['id'];
-            $st = $row['st'];
+            // $id = $row['id'];
+            $fname = $row['name'];
+            // $st = $row['st'];
         }
-    }
-    if($st === '1'){
-        header("location:dashboard.php");
-        ?>
-        <script>
-            window.location.href='dashboard.php'
-        </script>
-        <?php
-    }else{
-    
     }
 ?>
 <!DOCTYPE html>
@@ -42,9 +33,9 @@ $details = "SELECT * FROM riders WHERE phone='".$_SESSION['loggedin_id']."'";
             <div class='flex items-center w-full max-w-6xl'>
                 <div class='flex items-center gap-2 mr-auto'>
                     <div class='flex items-center justify-center w-8 h-8 md:w-12 md:h-12 rounded-full bg-green-100 object-cover overflow-hidden'>
-                        <img class='h-full w-full' src="./image/Kustride.png" alt="">
+                        <img class='h-full w-full' src="../image/Kustride.png" alt="">
                     </div>
-                    <span class='font-semibold md:text-lg text-white'>Faruq Farex</span>
+                    <span class='font-semibold md:text-lg text-white'><?php echo $fname ?></span>
                 </div>
     
 
@@ -73,31 +64,45 @@ $details = "SELECT * FROM riders WHERE phone='".$_SESSION['loggedin_id']."'";
                 </div>
                 <div class='flex flex-col h-full gap-y-3 mt-3'>
                     <!-- BALANCE SECTION STARTS HERE -->
-                    <div class='flex w-full justify-between items-center px-3 py-2 md:py-4 md:px-6 bg-white bg-opacity-75'>
-                        <div class='flex w-full gap-2'>
-                            <form onsubmit(); return false(); class='flex flex-col w-full justify-between gap-1 items-center'>
-                                <h3 class="mb-4 text-xl font-bold text-center text-gray-900 dark:text-white">
-                                    Registration Payment
-                                </h3>
-                                <p class="text-sm">
-                                    Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                                    Obcaecati, Lorem ipsum dolor sit, amet consectetur adipisicing
-                                    elit. Obcaecati at animiLorem ipsum dolor sit, amet consectetur
-                                    adipisicing elit. Obcaecati!p
-                                </p>
-                                <p class="mt-2">
-                                    You are to pay
-                                    <span class="font-bold text-green-500">
-                                        ₦5,500.00
-                                    </span>
-                                </p>
-                            <input type="text" id="amount" name="amount" value="5500" class="hidden bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-teal-600 focus:border-teal-600 block w-full p-2.5"placeholder="Amount" required>
-                                <button type="button" onclick="payWithPaystack()" class="mt-5 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-12 rounded">
-                                    Pay
-                                </button>
-                            </form>
+                    <div class="grid grid-cols-1 h-full md:grid-cols-2 justify-items-center gap-y-8 gap-x-8 py-4 px-8 md:py-8">
+                            <a href="users.php" class="flex flex-col items-center text-gray-700 justify-center gap-4 w-full p-4 bg-white h-60 shadow-md hover:text-green-500 hover:shadow-lg rounded">
+                                <span class="text-3xl md:text-5xl lg:text-7xl text-green-500"><i class="fa fa-users"></i></span>
+                                <span class="font-bold text-2xl">Riders</span>
+                                <?php
+                                $query = "SELECT * FROM riders";
+                                $result = mysqli_query($conn, $query) or die(mysqli_error($conn));
+                                $count = mysqli_num_rows($result);
+                                if ($count > 0) {
+                                    ?>
+                                    <p class="italic font-bold text-gray-700"><span class=""><?php echo $count ?></span> Users available</p>
+                                    <?php
+                                }else{
+                                    ?>
+                                    <p class="italic font-bold text-gray-700">No User available</p>
+                                    <?php
+                                }
+                                ?>
+                                
+                            </a>
+                            <a href="payment.php" class="flex flex-col items-center text-gray-700 justify-center gap-4 w-full p-4 bg-white h-60 shadow-md hover:text-green-500 hover:shadow-lg rounded">
+                                <span class="text-3xl md:text-5xl lg:text-7xl text-green-500"><i class="fa-solid fa-money-bill"></i></span>
+                                <span class="font-bold text-2xl">Payment</span>
+                                <?php
+                                $query = "SELECT * FROM riders";
+                                $result = mysqli_query($conn, $query) or die(mysqli_error($conn));
+                                $count = mysqli_num_rows($result);
+                                if ($count > 0) {
+                                    ?>
+                                    <p class="italic font-bold text-gray-700"><span class=""><?php echo $count ?></span> Riders payed for this month</p>
+                                    <?php
+                                }else{
+                                    ?>
+                                    <p class="italic font-bold text-gray-700">No Rider has payed for this month</p>
+                                    <?php
+                                }
+                                ?>
+                            </a>
                         </div>
-                    </div>
                     <!-- BALANCE SECTION ENDS HERE -->
                 </div>
             </div>
@@ -111,10 +116,10 @@ $details = "SELECT * FROM riders WHERE phone='".$_SESSION['loggedin_id']."'";
                     <a href="dashboard.php"><i class='text-white fa fa-home'></i></a>
                 </span>
                 <span class='text-green-600 text-lg md:text-3xl'>
-                    <a href="dashboard.php"><i class='text-white fa fa-credit-card'></i></a>
+                    <a href="users.php"><i class='text-white fa fa-users'></i></a>
                 </span>
                 <span class='text-green-600 text-lg md:text-3xl'>
-                    <a href="dashboard.php"><i class='text-white fa fa-user'></i></a>
+                    <a href="payment.php"><i class='text-white fa fa-credit-card'></i></a>
                 </span>
                 <span class='text-green-600 text-lg md:text-3xl'>
                     <button type="button" id="dropdownDividerButton" data-dropdown-toggle="dropdownDivider"><i class='text-white fa fa-gear'></i></button>
@@ -145,35 +150,5 @@ $details = "SELECT * FROM riders WHERE phone='".$_SESSION['loggedin_id']."'";
     <!-- MODAL SECTION ENDS HERE -->
     <script src="https://unpkg.com/flowbite@1.4.7/dist/flowbite.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://js.paystack.co/v1/inline.js"></script>
-
-<script>
-  function payWithPaystack(){
-
- document.cookie = "amount = " + document.getElementById("amount").value;
-  var handler = PaystackPop.setup({
-      key: 'pk_test_0ff1432465dd74912a4611ab331627725ed87907',
-      email: 'Anjima@gmail.com',
-      amount: document.getElementById("amount").value+"00",
-      ref: '<?php echo mt_rand(00000000,12345678);?>', // generates a pseudo-unique reference. Please replace with a reference you generated. Or remove the line entirely so our API will generate one for you
-      metadata: {
-         custom_fields: [
-            {
-                display_country: "",
-                display_city: "",
-                display_id: ""
-                 }
-         ]
-      },
-      callback: function(response){
-           window.location.replace("payment-verify.php?ref="+response.reference);
-      },
-      onClose: function(){
-          alert('Top up canceled');
-      }
-    });
-    handler.openIframe();
-  }
-</script>
 </body>
 </html>

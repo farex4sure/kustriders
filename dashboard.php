@@ -8,9 +8,21 @@ $details = "SELECT * FROM riders WHERE phone='".$_SESSION['loggedin_id']."'";
     $result = $conn->query($details);
     if ($result->num_rows > 0) {
         while($row = $result->fetch_assoc()) {
-            $id = $row['id'];
+            // $id = $row['id'];
+            $fname = $row['fullname'];
+            $st = $row['st'];
         }
     }
+if($st === '0'){
+    header("location:payment.php");
+    ?>
+    <script>
+        window.location.href='payment.php'
+    </script>
+    <?php
+}else{
+
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -33,7 +45,7 @@ $details = "SELECT * FROM riders WHERE phone='".$_SESSION['loggedin_id']."'";
                     <div class='flex items-center justify-center w-8 h-8 md:w-12 md:h-12 rounded-full bg-green-100 object-cover overflow-hidden'>
                         <img class='h-full w-full' src="./image/Kustride.png" alt="">
                     </div>
-                    <span class='font-semibold md:text-lg text-white'>Faruq Farex</span>
+                    <span class='font-semibold md:text-lg text-white'><?php echo $fname ?></span>
                 </div>
     
 
@@ -74,8 +86,8 @@ $details = "SELECT * FROM riders WHERE phone='".$_SESSION['loggedin_id']."'";
                             <div class='flex flex-col w-full justify-between gap-1 items-end'>
                                 <p class='font-bold text-xl'>Next Payment</p>
                                 <p class=''>20th Dec, 2022</p>
-                                <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3 rounded">
-                                    View Details
+                                <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-7 rounded">
+                                    Pay now
                                 </button>
                             </div>
                         </div>
@@ -86,7 +98,7 @@ $details = "SELECT * FROM riders WHERE phone='".$_SESSION['loggedin_id']."'";
                     
                     <!-- TRANSACTION HISTORY SECTION STARTS HERE -->
                         <div class='flex flex-col w-full h-full px-3 py-4 bg-white bg-opacity-75 rounded-lg'>
-                            <a href="transactions.php">
+                            <a href="#">
                                 <div class='flex items-center w-full mb-2 py-1'>
                                     <div class='flex items-center gap-1 mr-auto'>
                                         <h3 class='w-full text-sm md:text-lg font-semibold text-gray-600'>Transaction History</h3>
@@ -97,25 +109,50 @@ $details = "SELECT * FROM riders WHERE phone='".$_SESSION['loggedin_id']."'";
                             </a>
                         <!-- TRANSACTION DETAILS SECTION STARTS HERE -->
                         <div class='flex flex-col h-full border-t border-b'>
-                        
+                        <?php
+                        $fetch = mysqli_query($conn, "SELECT * FROM transaction WHERE receiver='".$_SESSION['loggedin_id']."' OR sender='".$_SESSION['loggedin_id']."' ORDER BY id DESC LIMIT 5");
+                        if($fetch->num_rows > 0){
+                            while($row = $fetch->fetch_assoc()){
+                                $t_id=$row['id'];
+                                $dt=$row['date'];
+                                $dt=date("M d, Y", $dt);
+                                $camount=$row['amt'];
+                            
+                                $sendto=$row['receiver'];
+                                if ($row['receiver'] == $_SESSION['loggedin_id']){
+                                    $sendto = $row['sender'];
+                                }
+
+                                $checkc=mysqli_query($conn, "SELECT * FROM riders WHERE phone='$sendto'");
+                                
+                                // get contact details
+                                
+                                while ($cc=mysqli_fetch_assoc($checkc)) {
+                                    $cfullname=$cc['fullname'];
+                                
+                    }
+                    if($_SESSION['loggedin_id']==$row['sender']) {
+                        ?>
                             <!-- SENT TRANSFER SECTION STARTS HERE -->
                             <form action="dashboard.php" method="post" class="flex flex-col divide-y border-t border-b">
                                 <button type="submit" name="submit" class='flex items-center justify-between w-full py-2 px-3 h-full'>
                                     <div class='flex gap-2 items-start'>
                                         <div class='text-red-500 pt-1 font-bold'><i class='fa fa-arrow-up'></i></div>
                                         <div class="flex flex-col">
-                                            <div class='text-left font-semibold md:text-lg uppercase'>Faruq Faruq</div>
-                                            <div class="text-left text-xs md:text-sm italic text-red-500 font-semibold">You transferred <span>200 to Umar Iash</span></div>
+                                            <div class='text-left font-semibold md:text-lg uppercase'><?php if($row['receiver'] === 'KUST'){ echo "KUST Riders Registration"; }else{echo $cfullname;} ?></div>
+                                            <div class="text-left text-xs md:text-sm italic text-red-500 font-semibold">You sent <span><?php echo number_format($camount); ?> to <?php if($row['receiver'] === 'KUST'){ echo "KUST RIDERS WUDIL"; }else{echo $cfullname;} ?></span></div>
                                         </div>
                                     </div>
                                     <div class='flex flex-col justify-start items-center'>
-                                        <span class='text-red-500 md:text-lg font-bold'><span class='text-sm md:text-lg font-bold'><i class='fa fa-naira-sign'></i></span>200</span>
-                                        <span class='text-xs md:text-sm self-end'>June, 2022</span>
+                                        <span class='text-red-500 md:text-lg font-bold'><span class='text-sm md:text-lg font-bold'><i class='fa fa-naira-sign'></i></span><?php echo number_format($camount); ?></span>
+                                        <span class='text-xs md:text-sm self-end'><?php echo $dt; ?></span>
                                     </div>
                                 </button>
                             </form>
                             <!-- SENT TRANSFER SECTION ENDS HERE -->
-
+                            <?php
+                    }elseif($_SESSION['loggedin_id']==$row['receiver']){
+                            ?>
                             <!-- RECEIVED TRANSFER SECTION STARTS HERE -->
                             <form action="dashboard.php" method="post" class="flex flex-col divide-y border-t border-b">
                             <button type="submit" name="submit2" class='flex items-center justify-between w-full py-2 px-3 h-full'>
@@ -133,6 +170,15 @@ $details = "SELECT * FROM riders WHERE phone='".$_SESSION['loggedin_id']."'";
                             </button>
                             </form>
                             <!-- RECEIVED TRANSFER SECTION ENDS HERE -->
+                            <?php
+                    }else{
+                        echo "error";
+                    }
+                    }
+        }else{
+        echo "No Any Transaction Yet";
+        }
+                            ?>
                         </div>
                         <!-- TRANSACTION DETAILS SECTION ENDS HERE -->
 
@@ -151,7 +197,7 @@ $details = "SELECT * FROM riders WHERE phone='".$_SESSION['loggedin_id']."'";
                     <a href="dashboard.php"><i class='text-white fa fa-home'></i></a>
                 </span>
                 <span class='text-green-600 text-lg md:text-3xl'>
-                    <a href="dashboard.php"><i class='text-white fa fa-credit-card'></i></a>
+                    <a href="monthly.php"><i class='text-white fa fa-credit-card'></i></a>
                 </span>
                 <span class='text-green-600 text-lg md:text-3xl'>
                     <a href="dashboard.php"><i class='text-white fa fa-user'></i></a>
