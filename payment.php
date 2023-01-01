@@ -153,7 +153,7 @@ $details = "SELECT * FROM riders WHERE phone='".$_SESSION['loggedin_id']."'";
  document.cookie = "amount = " + document.getElementById("amount").value;
   var handler = PaystackPop.setup({
       key: 'pk_test_0ff1432465dd74912a4611ab331627725ed87907',
-      email: 'Anjima@gmail.com',
+      email: 'kustriders@gmail.com',
       amount: document.getElementById("amount").value+"00",
       ref: '<?php echo mt_rand(00000000,12345678);?>', // generates a pseudo-unique reference. Please replace with a reference you generated. Or remove the line entirely so our API will generate one for you
       metadata: {

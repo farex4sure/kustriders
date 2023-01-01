@@ -11,17 +11,18 @@ $details = "SELECT * FROM riders WHERE phone='".$_SESSION['loggedin_id']."'";
                     $id = $row['id'];
                     $name = $row["fullname"];
                     $phone = $row["phone"];
+                    $brand = $row["bike_brand"];
+                    $add = $row["address"];
                 }
             }
 ?>
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <script src="js/jquery.min.js"></script>  
+<head> 
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anjima | Profile</title>
+    <title>Kust Riders | Profile</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="https://unpkg.com/flowbite@1.4.7/dist/flowbite.min.css" />
 </head>
@@ -70,6 +71,22 @@ $details = "SELECT * FROM riders WHERE phone='".$_SESSION['loggedin_id']."'";
                                 <span class="truncate"><?php echo $_SESSION['loggedin_id'] ?></span>
                             </div>
                         </div>
+                        <div class='flex items-center justify-between w-full py-3 px-3'>
+                            <div class='flex items-center justify-center'>
+                                <span>Bike Brand</span>
+                            </div>
+                            <div class='flex justify-end items-center text-sm text-black'>
+                                <span class="truncate"><?php echo $brand?></span>
+                            </div>
+                        </div>
+                        <div class='flex items-center justify-between w-full py-3 px-3'>
+                            <div class='flex items-center justify-center'>
+                                <span>Address</span>
+                            </div>
+                            <div class='flex justify-end items-center text-sm text-black'>
+                                <span class="truncate"><?php echo $add?></span>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- <div class='flex flex-col divide-y border-t border-b rounded-md justify-start bg-white bg-opacity-50 py-2'>
@@ -108,7 +125,7 @@ $details = "SELECT * FROM riders WHERE phone='".$_SESSION['loggedin_id']."'";
         <footer class='flex w-full justify-center p-3 px-0 bg-opacity-25'>
             <div class='flex justify-around w-full max-w-5xl px-4 gap-3'>
                 <button class='w-full py-1.5 md:py-2 lg:py-3 font-semibold text-green-600 bg-green-100 rounded-2xl border border-gray-00 text-lg md:text-3xl'>
-                    <a href="edit_profile.php">Edit Profile</a>
+                    <a href="#">Edit Profile</a>
                 </button>
             </div>
         </footer>

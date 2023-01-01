@@ -1,6 +1,7 @@
 <?php
 session_start();
 include "config.php";
+$err="";
 if(!isset($_SESSION['loggedin_admin'])){
     header("location:index.php");
 }
@@ -13,7 +14,54 @@ $details = "SELECT * FROM admins WHERE phone='".$_SESSION['loggedin_admin']."'";
             // $st = $row['st'];
         }
     }
-?>
+    if(isset($_POST['suspend'])){
+        $uid=$_POST['uid'];
+        $update=mysqli_query($conn,"UPDATE riders SET st='2' WHERE id='$uid'");
+    
+        $riders = "SELECT * FROM riders WHERE id='$uid'";
+        $res = $conn->query($riders);
+        if ($res->num_rows > 0) {
+            while($row = $res->fetch_assoc()) {
+                $rname = $row['fullname'];
+            }
+        }
+        if($update == true){
+            $err="<div class='p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg dark:bg-green-200 dark:text-green-800' role='alert'>
+                    <span class='font-medium'>Success</span> $rname Has been suspended
+                  </div>";
+        }else{
+            $err="<div class='p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800' role='alert'>
+                    <span class='font-medium'>Error</span> Unable to suspend this rider
+                  </div>";
+        }
+    
+    }
+
+
+    
+    if(isset($_POST['revive'])){
+        $uid=$_POST['uid'];
+        $update=mysqli_query($conn,"UPDATE riders SET st='1' WHERE id='$uid'");
+    
+        $riders = "SELECT * FROM riders WHERE id='$uid'";
+        $res = $conn->query($riders);
+        if ($res->num_rows > 0) {
+            while($row = $res->fetch_assoc()) {
+                $rname = $row['fullname'];
+            }
+        }
+        if($update == true){
+            $err="<div class='p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg dark:bg-green-200 dark:text-green-800' role='alert'>
+                    <span class='font-medium'>Success</span> $rname Has been revived
+                  </div>";
+        }else{
+            $err="<div class='p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800' role='alert'>
+                    <span class='font-medium'>Error</span> Unable to revive this rider
+                  </div>";
+        }
+    
+    }
+    ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -32,10 +80,7 @@ $details = "SELECT * FROM admins WHERE phone='".$_SESSION['loggedin_admin']."'";
         <header class='flex justify-center p-3 shadow mb-4 md:px-8 bg-green-500 shadow-lg'>
             <div class='flex items-center w-full max-w-6xl'>
                 <div class='flex items-center gap-2 mr-auto'>
-                    <div class='flex items-center justify-center w-8 h-8 md:w-12 md:h-12 rounded-full bg-green-100 object-cover overflow-hidden'>
-                        <img class='h-full w-full' src="../image/Kustride.png" alt="">
-                    </div>
-                    <span class='font-semibold md:text-lg text-white'><?php echo $fname ?></span>
+                    <a href="dashboard.php" class='font-semibold md:text-lg text-white'><i class="fa fa-arrow-left"></i> Payment</a>
                 </div>
     
 
@@ -43,7 +88,7 @@ $details = "SELECT * FROM admins WHERE phone='".$_SESSION['loggedin_admin']."'";
                 <div id="dropdownDivider" class="hidden z-10 w-32 md:w-36 bg-white rounded divide-y divide-gray-100 shadow">
                     <ul class="px-[3px] text-sm text-gray-700" aria-labelledby="dropdownDividerButton">
                         <li>
-                            <a href="#" class="flex justify-between items-center w-full text-xs py-2 px-1 hover:bg-gray-100">Change Password <i class="fa-solid fa-key text-green-600"></i></a>
+                            <a href="cpass.php" class="flex justify-between items-center w-full text-xs py-2 px-1 hover:bg-gray-100">Change Password <i class="fa-solid fa-key text-green-600"></i></a>
                         </li>
                         <li>
                             <button type="button" data-modal-toggle="popup-modal" class="flex justify-between items-center w-full text-xs py-2 px-1 hover:bg-gray-100">Sign Out <i class="fa-solid fa-power-off text-red-500"></i></button>
@@ -64,45 +109,85 @@ $details = "SELECT * FROM admins WHERE phone='".$_SESSION['loggedin_admin']."'";
                 </div>
                 <div class='flex flex-col h-full gap-y-3 mt-3'>
                     <!-- BALANCE SECTION STARTS HERE -->
-                    <div class="grid grid-cols-1 h-full md:grid-cols-2 justify-items-center gap-y-8 gap-x-8 py-4 px-8 md:py-8">
-                            <a href="users.php" class="flex flex-col items-center text-gray-700 justify-center gap-4 w-full p-4 bg-white h-60 shadow-md hover:text-green-500 hover:shadow-lg rounded">
-                                <span class="text-3xl md:text-5xl lg:text-7xl text-green-500"><i class="fa fa-users"></i></span>
-                                <span class="font-bold text-2xl">Riders</span>
+                    
+                    <div class="overflow-x-auto relative">
+                        <?php echo $err ?>
+                        <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                <tr>
+                                    <th scope="col" class="py-3 px-6">
+                                        Fullname
+                                    </th>
+                                    <th scope="col" class="py-3 px-6">
+                                        Phone
+                                    </th>
+                                    <th scope="col" class="py-3 px-6">
+                                        Bike Brand
+                                    </th>
+                                    <th scope="col" class="py-3 px-6">
+                                        Plate No.
+                                    </th>
+                                    <th scope="col" class="py-3 px-6">
+                                        Amount
+                                    </th>
+                                    <th scope="col" class="py-3 px-6">
+                                        Date
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <?php
+                                $detail = "SELECT * FROM reg_payment";
+                                $results = $conn->query($detail);
+                                if ($results->num_rows > 0) {
+                                    while($row = $results->fetch_assoc()) {
+                                        $u_id = $row['id'];
+                                        $userid = $row['userid'];
+                                        $amt = $row['amt'];
+                                        $date = $row['date'];
+                                        $date=date("M d, Y", $date);
+                            ?>
+                                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                    <?php
+                                    $detail = "SELECT * FROM riders WHERE phone='$userid'";
+                                    $results = $conn->query($detail);
+                                    if ($results->num_rows > 0) {
+                                        while($row = $results->fetch_assoc()) {
+                                            $name = $row['fullname'];
+                                            $ph = $row['phone'];
+                                            $brand = $row['bike_brand'];
+                                            $plate_no = $row['plate_no'];
+                                    ?>
+                                    <td scope="row" class="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                        <?php echo $name ?>
+                                    </td>
+                                    <td class="py-4 px-6">
+                                        <?php echo $ph ?>
+                                    </td>
+                                    <td class="py-4 px-6">
+                                        <?php echo $brand ?>
+                                    </td>
+                                    <td class="py-4 px-6">
+                                        <?php echo $plate_no ?>
+                                    </td>
+                                    <?php
+                                        }
+                                    }
+                                    ?>
+                                    <td class="py-4 px-6">
+                                        <?php echo number_format($amt); ?>
+                                    </td>
+                                    <td class="py-4 px-6">
+                                        <?php echo $date ?>
+                                    </td>
+                                </tr>
                                 <?php
-                                $query = "SELECT * FROM riders";
-                                $result = mysqli_query($conn, $query) or die(mysqli_error($conn));
-                                $count = mysqli_num_rows($result);
-                                if ($count > 0) {
-                                    ?>
-                                    <p class="italic font-bold text-gray-700"><span class=""><?php echo $count ?></span> Users available</p>
-                                    <?php
-                                }else{
-                                    ?>
-                                    <p class="italic font-bold text-gray-700">No User available</p>
-                                    <?php
+                                    }
                                 }
                                 ?>
-                                
-                            </a>
-                            <a href="payment.php" class="flex flex-col items-center text-gray-700 justify-center gap-4 w-full p-4 bg-white h-60 shadow-md hover:text-green-500 hover:shadow-lg rounded">
-                                <span class="text-3xl md:text-5xl lg:text-7xl text-green-500"><i class="fa-solid fa-money-bill"></i></span>
-                                <span class="font-bold text-2xl">Payment</span>
-                                <?php
-                                $query = "SELECT * FROM reg_payment";
-                                $result = mysqli_query($conn, $query) or die(mysqli_error($conn));
-                                $count = mysqli_num_rows($result);
-                                if ($count > 0) {
-                                    ?>
-                                    <p class="italic font-bold text-gray-700"><span class=""><?php echo $count ?></span> Riders payed for registration</p>
-                                    <?php
-                                }else{
-                                    ?>
-                                    <p class="italic font-bold text-gray-700">No Rider has payed for registration</p>
-                                    <?php
-                                }
-                                ?>
-                            </a>
-                        </div>
+                            </tbody>
+                        </table>
+                    </div>
                     <!-- BALANCE SECTION ENDS HERE -->
                 </div>
             </div>

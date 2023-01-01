@@ -49,7 +49,7 @@ if (empty($phone)) {
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kustride | Admin Login</title>
+    <title>Kust Riders | Admin Login</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
@@ -66,7 +66,7 @@ if (empty($phone)) {
         </div>
         <div class='w-full max-w-5xl px-4'>
             <div>
-                <form action="signin.php" method="post">
+                <form action="index.php" method="post">
                 <?php echo $err ?>
                     <div class="mb-6">
                         <div class='flex items-center mb-2'>

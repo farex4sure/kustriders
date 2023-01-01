@@ -44,11 +44,12 @@ mysqli_query($conn, "UPDATE refs SET used='true' WHERE refcode='$generated_ref'"
 
 $date=time();
 $refid="T".date("Y_M_D_His_").rand(01111,99999);
+$npay=$date+2629743;
 
     $payed=mysqli_query($conn, "INSERT INTO reg_payment (userid,amt,date)values('".$_SESSION["loggedin_id"]."','5500','$date')");
     $upd=mysqli_query($conn, "UPDATE riders SET st='1' WHERE phone='".$_SESSION["loggedin_id"]."'");
     $trans=mysqli_query($conn, "INSERT INTO transaction (sender,receiver,amt,refid,date)values('".$_SESSION["loggedin_id"]."','KUST','5500','$refid','$date')");
-    $month=mysqli_query($conn, "INSERT INTO monthly_pay (userid,lastpay,nextpay,date)values('".$_SESSION["loggedin_id"]."','$date','','$date')");
+    $month=mysqli_query($conn, "INSERT INTO monthly_pay (userid,lastpay,nextpay,date)values('".$_SESSION["loggedin_id"]."','$date','$npay','$date')");
 }
 $resf="
 <h2 class='text-success'><b>You have successfully made your payment</h2>
