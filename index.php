@@ -9,7 +9,7 @@
 		<link rel="stylesheet" href="https://unpkg.com/flowbite@1.5.5/dist/flowbite.min.css"/>
 		<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet"/>
 	</head>
-	<body>  
+	<body>
         <nav class="bg-white px-2 sm:px-4 py-2.5 dark:bg-gray-900 fixed w-full z-20 top-0 left-0 border-b border-gray-200 dark:border-gray-600">
             <div class="container flex flex-wrap items-center justify-between mx-auto">
                 <a href="./" class="flex items-center">
